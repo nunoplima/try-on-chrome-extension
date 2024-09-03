@@ -1,0 +1,37 @@
+# Makefile
+
+# Define the default goal
+.DEFAULT_GOAL := help
+
+# Help command
+help:
+	@echo "Usage:"
+	@echo "  make component NAME=ComponentName [CUSTOM_PATH=path/to/component]"
+	@echo "  This will create a new React component in the specified path"
+	@echo "  If CUSTOM_PATH is not provided, it defaults to 'src/components'"
+
+# Component creation command
+component:
+	@if [ -z "$(NAME)" ]; then \
+		echo "Error: NAME is required. Use 'make component NAME=ComponentName [PATH=path/to/component]'"; \
+		exit 1; \
+	fi
+	$(eval CUSTOM_PATH := $(if $(CUSTOM_PATH),$(CUSTOM_PATH),src/components))
+	@mkdir -p $(CUSTOM_PATH)/$(NAME)
+	@echo "import { FC } from 'react';" > $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "import { I$(NAME) } from './$(NAME).types';" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "export const $(NAME): FC<I$(NAME)> = () => {" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "  return (" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "    <h1>$(NAME) Component</h1>" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "  );" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "};" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).tsx
+	@echo "export { $(NAME) as default } from './$(NAME)';" > $(CUSTOM_PATH)/$(NAME)/index.ts
+	@echo "interface I$(NAME) {" > $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
+	@echo "  // Define your prop types here" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
+	@echo "}" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
+	@echo "export type { I$(NAME) }" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
+	@echo "Component $(NAME) created in $(CUSTOM_PATH)/$(NAME) ✨"
+
+.PHONY: help component
