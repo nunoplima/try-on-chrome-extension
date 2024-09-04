@@ -31,6 +31,7 @@ component:
 	@echo "interface I$(NAME) {" > $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
 	@echo "  // Define your prop types here" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
 	@echo "}" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
+	@echo "" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
 	@echo "export type { I$(NAME) }" >> $(CUSTOM_PATH)/$(NAME)/$(NAME).types.ts
 	@echo "Component $(NAME) created in $(CUSTOM_PATH)/$(NAME) ✨"
 
