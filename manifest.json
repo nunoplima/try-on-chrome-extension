@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "name": "Vite React Extension",
+  "description": "A browser extension built with Vite, React, and Tailwind",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "vite.png",
+    "default_title": "React Chrome Extension"
+  },
+  "permissions": ["activeTab"]
+}
