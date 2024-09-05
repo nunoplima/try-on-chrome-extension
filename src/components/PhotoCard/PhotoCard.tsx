@@ -12,7 +12,7 @@ export const PhotoActionButton: FC<IPhotoActionButton> = ({
   <button
     onClick={onClick}
     className={cn(
-      'flex h-8 w-8 transform items-center justify-center rounded-full border bg-white shadow-md transition-all duration-300 hover:scale-105 active:scale-95',
+      'flex h-8 w-8 transform items-center justify-center rounded-full border bg-white p-1 shadow-md transition-all duration-300 hover:scale-105 active:scale-95',
       classNames,
     )}
   >

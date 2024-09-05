@@ -8,6 +8,7 @@ export const SwipeableContainer: FC<ISwipeableContainer> = ({
   slidesPerView = 3.5,
   spaceBetween = 5,
   slidesOffsetBefore = 24,
+  slidesOffsetAfter = 24,
   children,
 }) => {
   return (
@@ -16,6 +17,7 @@ export const SwipeableContainer: FC<ISwipeableContainer> = ({
       slidesPerView={slidesPerView}
       spaceBetween={spaceBetween}
       slidesOffsetBefore={slidesOffsetBefore}
+      slidesOffsetAfter={slidesOffsetAfter}
     >
       {Children.map(children, (child) => (
         <SwiperSlide>{child}</SwiperSlide>
