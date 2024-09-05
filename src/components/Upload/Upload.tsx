@@ -11,20 +11,20 @@ export const Upload: FC<IUpload> = ({ onChange, onDrop, uploadStatus }) => {
 
   return (
     <div
-      className="relative space-y-2"
+      className="relative space-y-2 px-6"
       onDrop={onDrop}
       onDragOver={handleDragOver}
     >
-      <label
-        htmlFor="user-image"
-        className="text-lg font-semibold text-gray-700"
-      >
-        Upload Your Photo
+      <label htmlFor="user-image">
+        <h3 className="text-lg font-semibold text-gray-700">
+          Upload Your Photo
+        </h3>
       </label>
       <input
         id="user-image"
         type="file"
         onChange={onChange}
+        accept="image/*"
         className="hidden"
       />
       <label

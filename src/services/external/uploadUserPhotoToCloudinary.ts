@@ -3,12 +3,16 @@ interface IUploadUserImageToCloudinaryResponse {
   data?: string
 }
 
+interface IUploadUserImageToCloudinaryRawResponse {
+  secure_url: string
+}
+
 export const uploadUserPhotoToCloudinary = async (file: File) => {
   return new Promise((resolve) => {
     setTimeout(
       () =>
         resolve({
-          data: 'https://res.cloudinary.com/nungon/image/upload/v1725463418/elun7qfaubpccnl9sqtx.webp',
+          data: 'https://res.cloudinary.com/nungon/image/upload/v1725531590/jyy0djqsibicvbgrwmlr.webp',
         }),
       1000,
     )
@@ -22,7 +26,7 @@ export const uploadUserPhotoToCloudinary = async (file: File) => {
   // )
 
   // try {
-  //   const response = await ky
+  //   const response: IUploadUserImageToCloudinaryRawResponse = await ky
   //     .post(
   //       `${import.meta.env.VITE_CLOUDINARY_BASE_URL}/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/upload`,
   //       {
@@ -31,7 +35,7 @@ export const uploadUserPhotoToCloudinary = async (file: File) => {
   //     )
   //     .json()
 
-  //   return { data: response } as IUploadUserImageToCloudinaryResponse
+  //   return { data: response.secure_url } as IUploadUserImageToCloudinaryResponse
   // } catch (error) {
   //   const errorMessage =
   //     error instanceof Error ? error.message : 'An unexpected error occurred'

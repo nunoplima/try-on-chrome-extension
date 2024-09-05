@@ -1,5 +1,6 @@
 import { X as XIcon } from 'lucide-react'
 import { ChangeEvent, DragEventHandler, useState } from 'react'
+import GenerateTryOnPhoto from './components/GenerateTryOnPhoto'
 import PhotoCard, {
   Photo,
   PhotoActionButton,
@@ -25,11 +26,13 @@ function App() {
   const handleUploadUserPhoto = async (file: File) => {
     setUploadStatus(EUploadStatuses.uploading)
 
-    const reader = new FileReader()
-    reader.onload = (e) => setUserPhoto(e.target?.result as string)
-    reader.readAsDataURL(file)
+    // optimistically render the user's photo
+    const imageUrl = URL.createObjectURL(file)
+    setUserPhoto(imageUrl)
 
+    // convert to webp
     const webPFile = await convertToWebPFile(file)
+    // try and upload to cloudinary
     const response = await uploadUserPhotoToCloudinary(webPFile)
     if (response.data) {
       setUploadStatus(EUploadStatuses.success)
@@ -61,14 +64,14 @@ function App() {
   const handleClearUserPhoto = () => setUserPhoto(undefined)
 
   return (
-    <div className="space-y-4 rounded-lg border p-6 shadow-lg">
+    <div className="space-y-4 overflow-hidden rounded-lg border shadow-lg">
       <Upload
         onChange={handleUserPhotoChange}
         onDrop={handleUserPhotoDrop}
         uploadStatus={uploadStatus}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 px-6">
         <PhotoCard>
           <PhotoLabel>Your Photo</PhotoLabel>
           <Photo imageSrc={userPhoto} imageAlt="your photo">
@@ -93,6 +96,8 @@ function App() {
         setPreviousUploadedPhotos={setPreviousUploadedPhotos}
         setUserPhoto={setUserPhoto}
       />
+
+      <GenerateTryOnPhoto />
     </div>
   )
 }

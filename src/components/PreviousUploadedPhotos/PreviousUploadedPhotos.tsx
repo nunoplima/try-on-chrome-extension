@@ -75,7 +75,7 @@ export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
   }
 
   return (
-    <div className="-mx-6 space-y-2">
+    <div className="space-y-2">
       <PreviousUploadedPhotosLabel count={previousUploadedPhotos.length} />
 
       <Collapsible collapsed={previousUploadedPhotos.length === 0}>
