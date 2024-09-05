@@ -3,17 +3,17 @@ interface IUploadUserImageToCloudinaryResponse {
   data?: string
 }
 
-export const uploadUserImageToCloudinary = (file: File) => {
+export const uploadUserPhotoToCloudinary = async (file: File) => {
   return new Promise((resolve) => {
     setTimeout(
       () =>
         resolve({
-          error:
-            'https://res.cloudinary.com/nungon/image/upload/v1725453741/em9uf64p05bwb2oc07hp.png',
+          data: 'https://res.cloudinary.com/nungon/image/upload/v1725463418/elun7qfaubpccnl9sqtx.webp',
         }),
       1000,
     )
   }) as Promise<IUploadUserImageToCloudinaryResponse>
+
   // const formData = new FormData()
   // formData.append('file', file)
   // formData.append(

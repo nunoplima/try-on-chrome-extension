@@ -4,3 +4,7 @@ export enum EUploadStatuses {
   success = 'success',
   error = 'error',
 }
+
+export enum ELocalStorageKeys {
+  previousUploadedPhotos = 'previous-uploaded-photos',
+}

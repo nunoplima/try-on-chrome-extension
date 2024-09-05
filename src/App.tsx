@@ -1,86 +1,98 @@
 import { X as XIcon } from 'lucide-react'
 import { ChangeEvent, DragEventHandler, useState } from 'react'
-import Photo, {
+import PhotoCard, {
+  Photo,
   PhotoActionButton,
   PhotoActions,
-  PhotoImage,
   PhotoLabel,
-} from './components/Photo'
+} from './components/PhotoCard'
+import PreviousUploadedPhotos from './components/PreviousUploadedPhotos'
 import Upload from './components/Upload'
-import { EUploadStatuses } from './enums'
-import { uploadUserImageToCloudinary } from './services/external/uploadUserImageToCloudinary'
+import { ELocalStorageKeys, EUploadStatuses } from './enums'
+import { usePersistedState } from './hooks/usePersistedState'
+import { uploadUserPhotoToCloudinary } from './services/external/uploadUserPhotoToCloudinary'
+import { convertToWebPFile } from './services/internal/convertToWebPFile'
 
 function App() {
-  const [userImage, setUserImage] = useState<string | undefined>()
+  const [previousUploadedPhotos, setPreviousUploadedPhotos] = usePersistedState<
+    string[]
+  >(ELocalStorageKeys.previousUploadedPhotos, [])
+  const [userPhoto, setUserPhoto] = useState<string | undefined>()
   const [uploadStatus, setUploadStatus] = useState<EUploadStatuses>(
     EUploadStatuses.idle,
   )
 
-  const handleUploadUserImage = async (file: File) => {
-    setUploadStatus(EUploadStatuses.idle)
-
-    const reader = new FileReader()
-    reader.onload = (e) => setUserImage(e.target?.result as string)
-    reader.readAsDataURL(file)
-
+  const handleUploadUserPhoto = async (file: File) => {
     setUploadStatus(EUploadStatuses.uploading)
 
-    const response = await uploadUserImageToCloudinary(file)
-    if (response.error) {
-      setUserImage(undefined)
-      setUploadStatus(EUploadStatuses.error)
-    } else {
+    const reader = new FileReader()
+    reader.onload = (e) => setUserPhoto(e.target?.result as string)
+    reader.readAsDataURL(file)
+
+    const webPFile = await convertToWebPFile(file)
+    const response = await uploadUserPhotoToCloudinary(webPFile)
+    if (response.data) {
       setUploadStatus(EUploadStatuses.success)
+      setPreviousUploadedPhotos([...previousUploadedPhotos, response.data])
+    } else {
+      setUserPhoto(undefined)
+      setUploadStatus(EUploadStatuses.error)
     }
   }
 
-  const handleUserImageDrop: DragEventHandler<HTMLDivElement> = (event) => {
+  const handleUserPhotoDrop: DragEventHandler<HTMLDivElement> = (event) => {
     event.preventDefault()
     const file = event.dataTransfer?.files[0]
 
     if (!file) return
 
-    handleUploadUserImage(file)
+    handleUploadUserPhoto(file)
   }
 
-  const handleUserImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUserPhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     const file = event.target.files?.[0]
 
     if (!file) return
 
-    handleUploadUserImage(file)
+    handleUploadUserPhoto(file)
   }
 
-  const handleClearUserImage = () => setUserImage(undefined)
+  const handleClearUserPhoto = () => setUserPhoto(undefined)
 
   return (
     <div className="space-y-4 rounded-lg border p-6 shadow-lg">
       <Upload
-        onChange={handleUserImageChange}
-        onDrop={handleUserImageDrop}
+        onChange={handleUserPhotoChange}
+        onDrop={handleUserPhotoDrop}
         uploadStatus={uploadStatus}
       />
 
       <div className="grid grid-cols-2 gap-4">
-        <Photo>
+        <PhotoCard>
           <PhotoLabel>Your Photo</PhotoLabel>
-          <PhotoImage imageSrc={userImage}>
-            {userImage ? (
+          <Photo imageSrc={userPhoto} imageAlt="your photo">
+            {userPhoto ? (
               <PhotoActions>
-                <PhotoActionButton onClick={handleClearUserImage}>
+                <PhotoActionButton onClick={handleClearUserPhoto}>
                   <XIcon className="text-gray-400" />
                 </PhotoActionButton>
               </PhotoActions>
             ) : null}
-          </PhotoImage>
-        </Photo>
+          </Photo>
+        </PhotoCard>
 
-        <Photo>
+        <PhotoCard>
           <PhotoLabel>Try-On Result</PhotoLabel>
-          <PhotoImage></PhotoImage>
-        </Photo>
+          <Photo imageAlt="try-on result"></Photo>
+        </PhotoCard>
       </div>
+
+      <PreviousUploadedPhotos
+        previousUploadedPhotos={previousUploadedPhotos}
+        setPreviousUploadedPhotos={setPreviousUploadedPhotos}
+        setUserPhoto={setUserPhoto}
+      />
     </div>
   )
 }
