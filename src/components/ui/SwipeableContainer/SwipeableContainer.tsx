@@ -5,23 +5,23 @@ import { ISwipeableContainer } from './SwipeableContainer.types'
 import 'swiper/css'
 
 export const SwipeableContainer: FC<ISwipeableContainer> = ({
-  classNames,
+  slidesPerView = 3.5,
+  spaceBetween = 5,
+  slidesOffsetBefore = 24,
   children,
 }) => {
   return (
-    <div className={classNames}>
-      <Swiper
-        watchSlidesProgress={true}
-        slidesPerView={3.5}
-        spaceBetween={5}
-        className="mySwiper"
-      >
-        {Children.map(children, (child) => (
-          <SwiperSlide>{child}</SwiperSlide>
-        ))}
+    <Swiper
+      watchSlidesProgress={true}
+      slidesPerView={slidesPerView}
+      spaceBetween={spaceBetween}
+      slidesOffsetBefore={slidesOffsetBefore}
+    >
+      {Children.map(children, (child) => (
+        <SwiperSlide>{child}</SwiperSlide>
+      ))}
 
-        <div className="absolute bottom-0 right-0 top-0 z-10 w-4 bg-gradient-to-r from-transparent to-white" />
-      </Swiper>
-    </div>
+      <div className="absolute bottom-0 right-0 top-0 z-10 w-4 bg-gradient-to-r from-transparent to-white" />
+    </Swiper>
   )
 }

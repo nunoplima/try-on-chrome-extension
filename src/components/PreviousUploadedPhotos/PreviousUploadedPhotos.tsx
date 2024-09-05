@@ -13,7 +13,7 @@ import {
 const PreviousUploadedPhotosLabel: FC<IPreviousUploadedPhotosLabel> = ({
   count,
 }) => (
-  <div className="flex items-center justify-between">
+  <div className="mx-6 flex items-center justify-between">
     <h3 className="text-lg font-semibold text-gray-700">
       Previous uploaded photos
     </h3>
@@ -75,7 +75,7 @@ export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="-mx-6 space-y-2">
       <PreviousUploadedPhotosLabel count={previousUploadedPhotos.length} />
 
       <Collapsible collapsed={previousUploadedPhotos.length === 0}>
