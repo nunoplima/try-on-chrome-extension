@@ -1,10 +1,10 @@
 import { ChangeEvent, DragEventHandler } from 'react'
-import { EUploadStatuses } from '../../enums'
+import { EHttpStatuses } from '../../enums'
 
 interface IUpload {
   onDrop: DragEventHandler<HTMLDivElement>
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
-  uploadStatus: EUploadStatuses
+  uploadStatus: EHttpStatuses
 }
 
 export type { IUpload }

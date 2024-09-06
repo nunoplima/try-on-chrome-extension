@@ -12,7 +12,7 @@ export const PhotoActionButton: FC<IPhotoActionButton> = ({
   <button
     onClick={onClick}
     className={cn(
-      'flex h-8 w-8 transform items-center justify-center rounded-full border bg-white p-1 shadow-md transition-all duration-300 hover:scale-105 active:scale-95',
+      'flex h-8 w-8 transform items-center justify-center rounded-full border bg-white p-1 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95',
       classNames,
     )}
   >
@@ -27,22 +27,34 @@ export const PhotoLabel: FC<PropsWithChildren> = ({ children }) => (
   <h3 className="text-lg font-semibold text-gray-700">{children}</h3>
 )
 
-export const Photo: FC<IPhoto> = ({ imageSrc, imageAlt, children }) => (
+export const Photo: FC<IPhoto> = ({
+  imageSrc,
+  imageAlt,
+  classNames,
+  children,
+}) => (
   <AnimatePresence mode="popLayout" initial={false}>
     <div
-      key={imageSrc}
-      className="relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-lg bg-gray-100"
+      className={cn(
+        'relative flex aspect-[3/4] items-center justify-center overflow-hidden rounded-lg bg-gray-100',
+        classNames,
+      )}
     >
       {imageSrc ? (
-        <motion.img
+        <motion.div
+          key={imageSrc}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          src={imageSrc}
-          alt={imageAlt}
-          draggable={false}
-          className="object-fit h-full w-full"
-        />
+        >
+          <motion.img
+            src={imageSrc}
+            alt={imageAlt}
+            draggable={false}
+            className="object-fit h-full w-full"
+          />
+          {children}
+        </motion.div>
       ) : (
         <motion.div
           key="icon"
@@ -53,8 +65,6 @@ export const Photo: FC<IPhoto> = ({ imageSrc, imageAlt, children }) => (
           <ImageIcon className="h-12 w-12 text-gray-400" />
         </motion.div>
       )}
-
-      {children}
     </div>
   </AnimatePresence>
 )

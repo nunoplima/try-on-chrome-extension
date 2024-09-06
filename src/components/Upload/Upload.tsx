@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Upload as UploadIcon } from 'lucide-react'
 import { DragEventHandler, FC } from 'react'
-import { EUploadStatuses } from '../../enums'
+import { EHttpStatuses } from '../../enums'
 import { IUpload } from './Upload.types'
 
 export const Upload: FC<IUpload> = ({ onChange, onDrop, uploadStatus }) => {
@@ -35,7 +35,7 @@ export const Upload: FC<IUpload> = ({ onChange, onDrop, uploadStatus }) => {
         <span className="text-gray-600">Choose a file or drag it here</span>
       </label>
 
-      {uploadStatus === EUploadStatuses.error && (
+      {uploadStatus === EHttpStatuses.error && (
         <motion.p
           className="absolute -bottom-4 left-0 text-xs font-semibold text-red-500"
           initial={{ opacity: 0 }}

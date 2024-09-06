@@ -3,6 +3,7 @@ import { MouseEventHandler, PropsWithChildren } from 'react'
 interface IPhoto extends PropsWithChildren {
   imageSrc?: string
   imageAlt: string
+  classNames?: string
 }
 
 interface IPhotoActionButton extends PropsWithChildren {

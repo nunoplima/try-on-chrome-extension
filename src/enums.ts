@@ -1,6 +1,6 @@
-export enum EUploadStatuses {
+export enum EHttpStatuses {
   idle = 'idle',
-  uploading = 'uploading',
+  loading = 'loading',
   success = 'success',
   error = 'error',
 }
