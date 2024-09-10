@@ -1,21 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ELocalStorageKeys } from '../enums'
 import {
   getFromLocalStorage,
   setToLocalStorage,
 } from '../services/internal/localStorage'
 
-export function usePersistedState<T>(
+export const usePersistedState = <T>(
   key: ELocalStorageKeys,
   initialValue: T,
-): [T, (value: T) => void] {
-  const [value, setValue] = useState<T>(
-    () => getFromLocalStorage<T>(key) || initialValue,
-  )
+): [T, (value: T) => void] => {
+  const [value, setValue] = useState<T>(initialValue)
 
-  const handleSetValue = (value: T) => {
-    setValue(value)
-    setToLocalStorage(key, value)
+  useEffect(() => {
+    getFromLocalStorage<T>(key)
+      .then((storedValue) => {
+        if (storedValue !== undefined) {
+          setValue(storedValue)
+        }
+      })
+      .catch((error) => {
+        console.error('Error getting data from storage:', error)
+      })
+  }, [key])
+
+  const handleSetValue = (newValue: T) => {
+    setValue(newValue)
+    setToLocalStorage(key, newValue)
   }
 
   return [value, handleSetValue]

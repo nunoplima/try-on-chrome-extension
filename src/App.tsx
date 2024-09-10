@@ -1,5 +1,6 @@
 import { X as XIcon } from 'lucide-react'
 import { ChangeEvent, DragEventHandler, useState } from 'react'
+import { convertToWebPFile } from './@lib/utils/webP'
 import GenerateTryOnPhoto from './components/GenerateTryOnPhoto'
 import PhotoCard, {
   Photo,
@@ -9,38 +10,40 @@ import PhotoCard, {
 } from './components/PhotoCard'
 import PreviousUploadedPhotos from './components/PreviousUploadedPhotos'
 import Upload from './components/Upload'
-import { ELocalStorageKeys, EUploadStatuses } from './enums'
+import { EHttpStatuses, ELocalStorageKeys } from './enums'
 import { usePersistedState } from './hooks/usePersistedState'
-import { uploadUserPhotoToCloudinary } from './services/external/uploadUserPhotoToCloudinary'
-import { convertToWebPFile } from './services/internal/convertToWebPFile'
+import { getGeneratedTryOnPhoto } from './services/external/getGeneratedTryOnPhoto'
+import { getTryOnEventId } from './services/external/getTryOnEventId'
+
+const apparelPhoto =
+  'https://res.cloudinary.com/nungon/image/upload/v1725534568/pjyfrbpeldmnlbm1pnrr.webp'
 
 function App() {
   const [previousUploadedPhotos, setPreviousUploadedPhotos] = usePersistedState<
     string[]
   >(ELocalStorageKeys.previousUploadedPhotos, [])
   const [userPhoto, setUserPhoto] = useState<string | undefined>()
-  const [uploadStatus, setUploadStatus] = useState<EUploadStatuses>(
-    EUploadStatuses.idle,
+  const [tryOnPhoto, setTryOnPhoto] = useState<string | undefined>()
+  const [uploadStatus, setUploadStatus] = useState<EHttpStatuses>(
+    EHttpStatuses.idle,
+  )
+  const [generateTryOnStatus, setGenerateTryOnStatus] = useState(
+    EHttpStatuses.idle,
   )
 
   const handleUploadUserPhoto = async (file: File) => {
-    setUploadStatus(EUploadStatuses.uploading)
-
-    // optimistically render the user's photo
-    const imageUrl = URL.createObjectURL(file)
-    setUserPhoto(imageUrl)
-
-    // convert to webp
     const webPFile = await convertToWebPFile(file)
-    // try and upload to cloudinary
-    const response = await uploadUserPhotoToCloudinary(webPFile)
-    if (response.data) {
-      setUploadStatus(EUploadStatuses.success)
-      setPreviousUploadedPhotos([...previousUploadedPhotos, response.data])
-    } else {
-      setUserPhoto(undefined)
-      setUploadStatus(EUploadStatuses.error)
+
+    const reader = new FileReader()
+
+    reader.onloadend = () => {
+      const base64DataUrl = reader.result as string
+
+      setUserPhoto(base64DataUrl)
+      setPreviousUploadedPhotos([...previousUploadedPhotos, base64DataUrl])
     }
+
+    reader.readAsDataURL(webPFile)
   }
 
   const handleUserPhotoDrop: DragEventHandler<HTMLDivElement> = (event) => {
@@ -61,7 +64,44 @@ function App() {
     handleUploadUserPhoto(file)
   }
 
+  const handleGenerateTryOnPhoto = async () => {
+    if (!userPhoto || !apparelPhoto) return
+
+    setGenerateTryOnStatus(EHttpStatuses.loading)
+
+    const getTryOnEventIdResponse = await getTryOnEventId({
+      userPhotoUrl: userPhoto,
+      apparelPhotoUrl: apparelPhoto,
+    })
+
+    if (getTryOnEventIdResponse.error) {
+      setGenerateTryOnStatus(EHttpStatuses.error)
+      return
+    }
+
+    const eventId = getTryOnEventIdResponse.data as string
+    const getGeneratedTryOnPhotoResponse = await getGeneratedTryOnPhoto(eventId)
+
+    if (getGeneratedTryOnPhotoResponse.error) {
+      setGenerateTryOnStatus(EHttpStatuses.error)
+      return
+    }
+
+    setTryOnPhoto(getGeneratedTryOnPhotoResponse.data)
+
+    setGenerateTryOnStatus(EHttpStatuses.success)
+  }
+
+  const handleClickPreviousUploadedPhoto = (
+    previousUploadedPhotoUrl: string,
+  ) => {
+    setUploadStatus(EHttpStatuses.idle)
+    setUserPhoto(previousUploadedPhotoUrl)
+  }
+
   const handleClearUserPhoto = () => setUserPhoto(undefined)
+
+  const handleClearGeneratedTryOnPhoto = () => setTryOnPhoto(undefined)
 
   return (
     <div className="space-y-4 overflow-hidden rounded-lg border shadow-lg">
@@ -75,29 +115,50 @@ function App() {
         <PhotoCard>
           <PhotoLabel>Your Photo</PhotoLabel>
           <Photo imageSrc={userPhoto} imageAlt="your photo">
-            {userPhoto ? (
+            {userPhoto && (
               <PhotoActions>
                 <PhotoActionButton onClick={handleClearUserPhoto}>
                   <XIcon className="text-gray-400" />
                 </PhotoActionButton>
               </PhotoActions>
-            ) : null}
+            )}
           </Photo>
         </PhotoCard>
 
         <PhotoCard>
           <PhotoLabel>Try-On Result</PhotoLabel>
-          <Photo imageAlt="try-on result"></Photo>
+          <Photo
+            imageSrc={tryOnPhoto}
+            imageAlt="try-on result"
+            classNames={`${generateTryOnStatus === EHttpStatuses.loading ? 'animate-pulse' : ''}`}
+          >
+            {tryOnPhoto && (
+              <PhotoActions>
+                <PhotoActionButton onClick={handleClearGeneratedTryOnPhoto}>
+                  <XIcon className="text-gray-400" />
+                </PhotoActionButton>
+              </PhotoActions>
+            )}
+          </Photo>
         </PhotoCard>
       </div>
 
       <PreviousUploadedPhotos
         previousUploadedPhotos={previousUploadedPhotos}
         setPreviousUploadedPhotos={setPreviousUploadedPhotos}
-        setUserPhoto={setUserPhoto}
+        onPreviousUploadedPhotoClick={handleClickPreviousUploadedPhoto}
       />
 
-      <GenerateTryOnPhoto />
+      <GenerateTryOnPhoto
+        onGenerateTryOnPhoto={handleGenerateTryOnPhoto}
+        isError={generateTryOnStatus === EHttpStatuses.error}
+        isLoading={generateTryOnStatus === EHttpStatuses.loading}
+        isDisabled={
+          generateTryOnStatus === EHttpStatuses.loading ||
+          !userPhoto ||
+          !apparelPhoto
+        }
+      />
     </div>
   )
 }

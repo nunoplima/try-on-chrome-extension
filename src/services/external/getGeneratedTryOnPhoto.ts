@@ -9,25 +9,21 @@ export const getGeneratedTryOnPhoto = async (
   eventId: string,
 ): Promise<IGetGeneratedTryOnPhotoResponse> => {
   try {
-    const response = await ky(
-      `https://kwai-kolors-kolors-virtual-try-on.hf.space/call/tryon/${eventId}`,
-      {
-        timeout: false,
-        retry: {
-          limit: 10,
-        },
+    const response = await ky(`${import.meta.env.VITE_HF_API_URL}/${eventId}`, {
+      headers: {
+        Authorization: `Bearer ${import.meta.env.VITE_HF_API_TOKEN}`,
+        'Content-Type': 'application/json',
       },
-    )
+      timeout: false,
+    })
 
     const reader = response!.body!.getReader()
     const decoder = new TextDecoder('utf-8')
     let buffer = ''
 
     const processText = async ({
-      done,
       value,
     }: ReadableStreamReadResult<Uint8Array>): Promise<IGetGeneratedTryOnPhotoResponse> => {
-      console.log({ done })
       buffer += decoder.decode(value, { stream: true })
       const lines = buffer.split('\n')
 
