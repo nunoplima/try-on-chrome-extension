@@ -6,5 +6,12 @@ export enum EHttpStatuses {
 }
 
 export enum ELocalStorageKeys {
-  previousUploadedPhotos = 'previous-uploaded-photos',
+  previousUploadedUserPhoto = 'previous-uploaded-user-photo',
+  previousTryOnPhotos = 'previous-try-on-photos',
+}
+
+export enum EWorkerMessages {
+  captureHtml = 'capture-html',
+  apparelPhotoSuccess = 'apparel-photo-success',
+  apparelPhotoError = 'apparel-photo-error',
 }
