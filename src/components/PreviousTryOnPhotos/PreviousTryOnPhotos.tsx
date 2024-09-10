@@ -5,14 +5,12 @@ import PhotoCard, { Photo, PhotoActionButton } from '../PhotoCard'
 import Collapsible from '../ui/Collapsible'
 import SwipeableContainer from '../ui/SwipeableContainer'
 import {
-  IPreviousUploadedPhotoCard,
-  IPreviousUploadedPhotos,
-  IPreviousUploadedPhotosLabel,
-} from './PreviousUploadedPhotos.types'
+  IPreviousTryOnPhotoCard,
+  IPreviousTryOnPhotos,
+  IPreviousTryOnPhotosLabel,
+} from './PreviousTryOnPhotos.types'
 
-const PreviousUploadedPhotosLabel: FC<IPreviousUploadedPhotosLabel> = ({
-  count,
-}) => (
+const PreviousTryOnPhotosLabel: FC<IPreviousTryOnPhotosLabel> = ({ count }) => (
   <div className="mx-6 flex items-center justify-between">
     <h3 className="text-lg font-semibold text-gray-700">
       Previous uploaded photos
@@ -21,7 +19,7 @@ const PreviousUploadedPhotosLabel: FC<IPreviousUploadedPhotosLabel> = ({
   </div>
 )
 
-const PreviousUploadedPhotoCard: FC<IPreviousUploadedPhotoCard> = ({
+const PreviousTryOnPhotoCard: FC<IPreviousTryOnPhotoCard> = ({
   imageSrc,
   onDelete,
   onSelect,
@@ -47,13 +45,13 @@ const PreviousUploadedPhotoCard: FC<IPreviousUploadedPhotoCard> = ({
   </AnimatePresence>
 )
 
-const PreviousUploadedPhotosList: FC<PropsWithChildren> = ({ children }) => (
+const PreviousTryOnPhotosList: FC<PropsWithChildren> = ({ children }) => (
   <SwipeableContainer>{children}</SwipeableContainer>
 )
 
-export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
-  previousUploadedPhotos,
-  setPreviousUploadedPhotos,
+export const PreviousTryOnPhotos: FC<IPreviousTryOnPhotos> = ({
+  previousTryOnPhotos,
+  setPreviousTryOnPhotos,
   onPreviousUploadedPhotoClick,
 }) => {
   const handleDeletePhoto: (
@@ -61,9 +59,7 @@ export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
   ) => MouseEventHandler<HTMLButtonElement> = (index: number) => (event) => {
     event.stopPropagation()
 
-    setPreviousUploadedPhotos(
-      previousUploadedPhotos.filter((_, i) => i !== index),
-    )
+    setPreviousTryOnPhotos(previousTryOnPhotos.filter((_, i) => i !== index))
   }
 
   const handleSelectPhoto: (
@@ -76,19 +72,19 @@ export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
 
   return (
     <div className="space-y-2">
-      <PreviousUploadedPhotosLabel count={previousUploadedPhotos.length} />
+      <PreviousTryOnPhotosLabel count={previousTryOnPhotos.length} />
 
-      <Collapsible collapsed={previousUploadedPhotos.length === 0}>
-        <PreviousUploadedPhotosList>
-          {previousUploadedPhotos.map((imageSrc, index) => (
-            <PreviousUploadedPhotoCard
+      <Collapsible collapsed={previousTryOnPhotos.length === 0}>
+        <PreviousTryOnPhotosList>
+          {previousTryOnPhotos.map((imageSrc, index) => (
+            <PreviousTryOnPhotoCard
               key={`${imageSrc}-${index}`}
               imageSrc={imageSrc}
               onDelete={handleDeletePhoto(index)}
               onSelect={handleSelectPhoto(imageSrc)}
             />
           ))}
-        </PreviousUploadedPhotosList>
+        </PreviousTryOnPhotosList>
       </Collapsible>
     </div>
   )

@@ -1,5 +1,5 @@
 import ky from 'ky'
-import { blobToBase64, urlToBlob } from '../../@lib/utils/base64'
+import { blobToBase64, parseBase64String, urlToBlob } from '../../utils/base64'
 
 interface IGenerateTryOnEventId {
   userPhotoUrl: string
@@ -29,14 +29,14 @@ export const getTryOnEventId = async ({
       throw new Error('Failed to fetch image in urlToBlob helper function.')
     }
 
-    const [userPhotoBase64, apparelPhotoBase64] = await Promise.all([
+    const [userPhotoRawBase64, apparelPhotoRawBase64] = await Promise.all([
       blobToBase64(userPhotoBlob),
       blobToBase64(apparelPhotoBlob),
     ])
 
     if (
-      userPhotoBase64 instanceof Error ||
-      apparelPhotoBase64 instanceof Error
+      userPhotoRawBase64 instanceof Error ||
+      apparelPhotoRawBase64 instanceof Error
     ) {
       throw new Error(
         'Failed to convert Blob to Base64 in blobToBase64 helper fn.',
@@ -44,7 +44,10 @@ export const getTryOnEventId = async ({
     }
 
     const payload = {
-      data: [userPhotoBase64, apparelPhotoBase64],
+      data: [
+        parseBase64String(userPhotoRawBase64),
+        parseBase64String(apparelPhotoRawBase64),
+      ],
     }
 
     const response: IGetTryOnEventIdRawResponse = await ky

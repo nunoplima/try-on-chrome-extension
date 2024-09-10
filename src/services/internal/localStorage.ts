@@ -23,7 +23,7 @@ export const getFromLocalStorage = <T>(key: string): Promise<T | undefined> => {
   return new Promise((resolve, reject) => {
     if (import.meta.env.DEV) {
       const item = localStorage.getItem(key)
-      return item ? (JSON.parse(item) as T) : undefined
+      resolve(item ? (JSON.parse(item) as T) : undefined)
     } else {
       chrome.storage.local.get([key], (result) => {
         if (chrome.runtime.lastError) {
