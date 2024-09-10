@@ -6,4 +6,9 @@ interface IWorkerMessage {
   data?: string
 }
 
-export type { IWorkerMessage }
+interface IApparelPhoto {
+  photoUrl: string
+  tabUrl: string
+}
+
+export type { IApparelPhoto, IWorkerMessage }

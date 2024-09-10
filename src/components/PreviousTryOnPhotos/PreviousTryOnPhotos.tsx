@@ -19,7 +19,7 @@ const PreviousTryOnPhotosLabel: FC<IPreviousTryOnPhotosLabel> = ({ count }) => (
   </div>
 )
 
-const PreviousTryOnPhotoCard: FC<IPreviousTryOnPhotoCard> = ({
+const PreviousUploadedPhotoCard: FC<IPreviousTryOnPhotoCard> = ({
   imageSrc,
   onDelete,
   onSelect,
@@ -77,7 +77,7 @@ export const PreviousTryOnPhotos: FC<IPreviousTryOnPhotos> = ({
       <Collapsible collapsed={previousTryOnPhotos.length === 0}>
         <PreviousTryOnPhotosList>
           {previousTryOnPhotos.map((imageSrc, index) => (
-            <PreviousTryOnPhotoCard
+            <PreviousUploadedPhotoCard
               key={`${imageSrc}-${index}`}
               imageSrc={imageSrc}
               onDelete={handleDeletePhoto(index)}

@@ -8,6 +8,7 @@ export enum EHttpStatuses {
 export enum ELocalStorageKeys {
   previousUploadedUserPhoto = 'previous-uploaded-user-photo',
   previousTryOnPhotos = 'previous-try-on-photos',
+  mappedApparelPhotosByStoreUrl = 'mapped-apparel-photos-by-store-url',
 }
 
 export enum EWorkerMessages {
