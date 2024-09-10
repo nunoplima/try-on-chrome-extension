@@ -12,8 +12,6 @@ export const setToLocalStorage = (key: string, value: unknown) => {
           'Error setting data in chrome.storage.local:',
           chrome.runtime.lastError,
         )
-      } else {
-        console.log('Data saved successfully!')
       }
     })
   }

@@ -2,7 +2,6 @@ import ky from 'ky'
 
 export const urlToBlob = async (filePath: string): Promise<Blob | Error> => {
   try {
-    console.log({ filePath })
     const blob = await ky(filePath).blob()
     return blob
   } catch {

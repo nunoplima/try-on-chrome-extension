@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ELocalStorageKeys } from '../enums'
 import {
   getFromLocalStorage,
@@ -8,7 +8,7 @@ import {
 export const usePersistedState = <T>(
   key: ELocalStorageKeys,
   initialValue: T,
-): [T, (value: T) => void] => {
+): [T, (value: T | ((prevValue: T) => T)) => void] => {
   const [value, setValue] = useState<T>(initialValue)
 
   useEffect(() => {
@@ -23,10 +23,21 @@ export const usePersistedState = <T>(
       })
   }, [key])
 
-  const handleSetValue = (newValue: T) => {
-    setValue(newValue)
-    setToLocalStorage(key, newValue)
-  }
+  const handleSetValue = useCallback(
+    (newValue: T | ((prevValue: T) => T)) => {
+      setValue((prevState) => {
+        const nextState =
+          typeof newValue === 'function'
+            ? (newValue as (prevValue: T) => T)(prevState)
+            : newValue
+
+        setToLocalStorage(key, nextState)
+
+        return nextState
+      })
+    },
+    [key],
+  )
 
   return [value, handleSetValue]
 }
