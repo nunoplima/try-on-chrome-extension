@@ -3,7 +3,7 @@ import { MouseEventHandler } from 'react'
 interface IPreviousUploadedPhotos {
   previousUploadedPhotos: string[]
   setPreviousUploadedPhotos: (value: string[]) => void
-  setUserPhoto: (value: string) => void
+  onPreviousUploadedPhotoClick: (value: string) => void
 }
 
 interface IPreviousUploadedPhotoCard {

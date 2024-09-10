@@ -54,7 +54,7 @@ const PreviousUploadedPhotosList: FC<PropsWithChildren> = ({ children }) => (
 export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
   previousUploadedPhotos,
   setPreviousUploadedPhotos,
-  setUserPhoto,
+  onPreviousUploadedPhotoClick,
 }) => {
   const handleDeletePhoto: (
     index: number,
@@ -71,7 +71,7 @@ export const PreviousUploadedPhotos: FC<IPreviousUploadedPhotos> = ({
   ) => MouseEventHandler<HTMLDivElement> = (imageSrc: string) => (event) => {
     event.stopPropagation()
 
-    setUserPhoto(imageSrc)
+    onPreviousUploadedPhotoClick(imageSrc)
   }
 
   return (

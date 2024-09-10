@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { ICollapsible } from './Collapsible.types'
 
 export const Collapsible: FC<ICollapsible> = ({ collapsed, children }) => (
-  <AnimatePresence>
+  <AnimatePresence initial={false}>
     {!collapsed && (
       <motion.div
         initial={{ opacity: 0, maxHeight: 0 }}

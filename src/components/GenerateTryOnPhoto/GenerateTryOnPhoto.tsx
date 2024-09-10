@@ -1,9 +1,11 @@
 import { Loader2 } from 'lucide-react'
 import { FC } from 'react'
+import ErrorMessage from '../ui/ErrorMessage'
 import { IGenerateTryOnPhoto } from './GenerateTryOnPhoto.types'
 
 export const GenerateTryOnPhoto: FC<IGenerateTryOnPhoto> = ({
   onGenerateTryOnPhoto,
+  isError,
   isLoading,
   isDisabled,
 }) => {
@@ -22,6 +24,11 @@ export const GenerateTryOnPhoto: FC<IGenerateTryOnPhoto> = ({
         ) : (
           'Generate Try-On Image'
         )}
+
+        <ErrorMessage
+          visible={isError}
+          message="The AI model is busy right now, try again later."
+        />
       </button>
     </div>
   )
