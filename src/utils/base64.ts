@@ -1,9 +1,11 @@
 import ky from 'ky'
 
-export const urlToBlob = async (filePath: string): Promise<Blob | Error> => {
+export const urlToBlob = async (
+  filePath: string,
+  options?: Record<string, unknown>,
+): Promise<Blob | Error> => {
   try {
-    const blob = await ky(filePath).blob()
-    return blob
+    return await ky(filePath, options).blob()
   } catch {
     return new Error('Failed to fetch image in urlToBlob helper fn.')
   }

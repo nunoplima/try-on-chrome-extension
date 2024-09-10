@@ -23,7 +23,7 @@ export const SwipeableContainer: FC<ISwipeableContainer> = ({
         <SwiperSlide>{child}</SwiperSlide>
       ))}
 
-      <div className="absolute bottom-0 right-0 top-0 z-10 w-4 bg-gradient-to-r from-transparent to-white" />
+      <div className="absolute -bottom-1 -right-1 -top-1 z-10 w-4 bg-gradient-to-r from-transparent to-white" />
     </Swiper>
   )
 }
