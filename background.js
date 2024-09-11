@@ -23,36 +23,6 @@ chrome.runtime.onMessage.addListener((request) => {
   }
 })
 
-export const convertUrlToWebPBlob = async (imageUrl) => {
-  const img = new Image()
-  img.src = imageUrl
-  img.crossOrigin = 'anonymous'
-
-  await new Promise((resolve) => {
-    img.onload = resolve
-    img.onerror = () => {
-      throw new Error('Failed to load image from URL')
-    }
-  })
-
-  const canvas = document.createElement('canvas')
-  canvas.width = img.width
-  canvas.height = img.height
-  const ctx = canvas.getContext('2d')
-
-  ctx?.drawImage(img, 0, 0)
-
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) {
-        resolve(blob)
-      } else {
-        reject(new Error('Failed to create WebP blob'))
-      }
-    }, 'image/webp')
-  })
-}
-
 chrome.runtime.onMessage.addListener((request) => {
   if (request.type === EWorkerMessages.captureHtml) {
     chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
