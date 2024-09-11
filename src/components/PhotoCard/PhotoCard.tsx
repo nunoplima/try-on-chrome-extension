@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Image as ImageIcon } from 'lucide-react'
 import { FC, PropsWithChildren } from 'react'
 import { cn } from '../../utils'
+import AnimatedDOMElement from '../ui/AnimatedDOMElement'
 import { IPhoto, IPhotoActionButton, IPhotoCard } from './PhotoCard.types'
 
 export const PhotoActionButton: FC<IPhotoActionButton> = ({
@@ -35,14 +36,11 @@ export const Photo: FC<IPhoto> = ({
   classNames,
   children,
 }) => (
-  <AnimatePresence mode="popLayout" initial={false}>
+  <AnimatePresence mode="wait" initial={false}>
     {imageSrc ? (
-      <motion.div
+      <AnimatedDOMElement
         key={imageSrc}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className={cn(
+        classNames={cn(
           'relative flex aspect-[3/4] h-full items-center justify-center',
           classNames,
         )}
@@ -54,20 +52,17 @@ export const Photo: FC<IPhoto> = ({
           className="object-fit h-full w-full"
         />
         {children}
-      </motion.div>
+      </AnimatedDOMElement>
     ) : (
-      <motion.div
+      <AnimatedDOMElement
         key="icon"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className={cn(
+        classNames={cn(
           'relative flex aspect-[3/4] h-full items-center justify-center',
           classNames,
         )}
       >
         <ImageIcon className="h-8 w-8 text-purple-300" />
-      </motion.div>
+      </AnimatedDOMElement>
     )}
   </AnimatePresence>
 )

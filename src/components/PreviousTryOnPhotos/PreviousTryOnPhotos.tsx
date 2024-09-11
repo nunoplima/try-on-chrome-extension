@@ -1,73 +1,56 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { Download as DownloadIcon, X as XIcon } from 'lucide-react'
 import { FC, MouseEventHandler, PropsWithChildren } from 'react'
 import PhotoCard, { Photo, PhotoActionButton, PhotoActions } from '../PhotoCard'
-import Collapsible from '../ui/Collapsible'
+import AnimatedDOMElement from '../ui/AnimatedDOMElement'
 import SwipeableContainer from '../ui/SwipeableContainer'
 import {
   IPreviousTryOnPhotoCard,
   IPreviousTryOnPhotos,
-  IPreviousTryOnPhotosLabel,
 } from './PreviousTryOnPhotos.types'
 
-const PreviousTryOnPhotosLabel: FC<IPreviousTryOnPhotosLabel> = ({ count }) => (
-  <div className="mb-2 flex items-center justify-between">
-    <h3 className="text-sm font-medium text-purple-700">Previous Mirrors</h3>
-    <p className="text-md text-purple-700">{count} </p>
-  </div>
+const PreviousTryOnPhotosLabel: FC = () => (
+  <label className="text-sm font-medium text-purple-700">
+    Previous Mirrors
+  </label>
 )
 
 const PreviousUploadedPhotoCard: FC<IPreviousTryOnPhotoCard> = ({
   imageSrc,
   onDelete,
   onSelect,
-}) => {
-  const handleDownloadPhoto =
-    (photoUrl: string): MouseEventHandler<HTMLButtonElement> =>
-    (event) => {
-      event.stopPropagation()
+  onDownload,
+}) => (
+  <AnimatePresence initial={false}>
+    <AnimatedDOMElement onClick={onSelect}>
+      <PhotoCard classNames="cursor-pointer shadow-none">
+        <Photo imageSrc={imageSrc} imageAlt="previously uploaded photo">
+          <PhotoActions>
+            <PhotoActionButton classNames="h-5 w-5" onClick={onDelete}>
+              <XIcon className="text-purple-600" />
+            </PhotoActionButton>
+            <PhotoActionButton
+              classNames="h-5 w-5"
+              onClick={onDownload(imageSrc)}
+            >
+              <DownloadIcon className="text-purple-600" />
+            </PhotoActionButton>
+          </PhotoActions>
+        </Photo>
+      </PhotoCard>
+    </AnimatedDOMElement>
+  </AnimatePresence>
+)
 
-      const link = document.createElement('a')
-      link.href = photoUrl
-      link.download = 'my-mirror.webp'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    }
-
-  return (
-    <AnimatePresence initial={false}>
-      <motion.div
-        onClick={onSelect}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <PhotoCard classNames="cursor-pointer shadow-none">
-          <Photo imageSrc={imageSrc} imageAlt="previously uploaded photo">
-            <PhotoActions>
-              <PhotoActionButton classNames="h-5 w-5" onClick={onDelete}>
-                <XIcon className="text-purple-600" />
-              </PhotoActionButton>
-              <PhotoActionButton
-                classNames="h-5 w-5"
-                onClick={handleDownloadPhoto(imageSrc)}
-              >
-                <DownloadIcon className="text-purple-600" />
-              </PhotoActionButton>
-            </PhotoActions>
-          </Photo>
-        </PhotoCard>
-      </motion.div>
-    </AnimatePresence>
-  )
-}
+const PreviousTryOnSkeleton = () => (
+  <PhotoCard classNames="border border-purple-100 shadow-none h-full w-full">
+    <Photo imageAlt='"previously uploaded photo loader' />
+  </PhotoCard>
+)
 
 const PreviousTryOnPhotosList: FC<PropsWithChildren> = ({ children }) => (
-  <div className="overflow-hidden rounded-md border border-purple-200 bg-white py-2">
-    <SwipeableContainer slidesOffsetBefore={8} slidesOffsetAfter={8}>
-      {children}
-    </SwipeableContainer>
+  <div className="h-[123px] overflow-hidden rounded-md border border-purple-200 bg-white py-2">
+    {children}
   </div>
 )
 
@@ -75,6 +58,7 @@ export const PreviousTryOnPhotos: FC<IPreviousTryOnPhotos> = ({
   previousTryOnPhotos,
   setPreviousTryOnPhotos,
   onPreviousUploadedPhotoClick,
+  onDownloadPhoto,
 }) => {
   const handleDeletePhoto: (
     index: number,
@@ -93,19 +77,37 @@ export const PreviousTryOnPhotos: FC<IPreviousTryOnPhotos> = ({
   }
 
   return (
-    <Collapsible collapsed={previousTryOnPhotos.length === 0}>
-      <PreviousTryOnPhotosLabel count={previousTryOnPhotos.length} />
+    <div className="flex flex-col gap-2">
+      <PreviousTryOnPhotosLabel />
 
       <PreviousTryOnPhotosList>
-        {previousTryOnPhotos.map((imageSrc, index) => (
-          <PreviousUploadedPhotoCard
-            key={`${imageSrc}-${index}`}
-            imageSrc={imageSrc}
-            onDelete={handleDeletePhoto(index)}
-            onSelect={handleSelectPhoto(imageSrc)}
-          />
-        ))}
+        <AnimatePresence mode="wait" initial={false}>
+          {previousTryOnPhotos.length > 0 ? (
+            <AnimatedDOMElement key="previous-try-outs">
+              <SwipeableContainer slidesOffsetBefore={8} slidesOffsetAfter={8}>
+                {previousTryOnPhotos.map((imageSrc, index) => (
+                  <PreviousUploadedPhotoCard
+                    key={`${imageSrc}-${index}`}
+                    imageSrc={imageSrc}
+                    onDelete={handleDeletePhoto(index)}
+                    onSelect={handleSelectPhoto(imageSrc)}
+                    onDownload={onDownloadPhoto}
+                  />
+                ))}
+              </SwipeableContainer>
+            </AnimatedDOMElement>
+          ) : (
+            <AnimatedDOMElement
+              key="loader"
+              classNames="flex h-full w-full items-center gap-2 px-2"
+            >
+              {new Array(4).fill(null).map((_, index) => (
+                <PreviousTryOnSkeleton key={index} />
+              ))}
+            </AnimatedDOMElement>
+          )}
+        </AnimatePresence>
       </PreviousTryOnPhotosList>
-    </Collapsible>
+    </div>
   )
 }

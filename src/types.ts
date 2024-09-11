@@ -4,6 +4,7 @@ interface IWorkerMessage {
   type: EWorkerMessages
   error?: string
   data?: string
+  tabUrl?: string
 }
 
 interface IApparelPhoto {

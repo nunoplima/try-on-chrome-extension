@@ -11,12 +11,6 @@ export const Upload: FC<IUpload> = ({ onChange, onDrop, uploadStatus }) => {
 
   return (
     <div className="relative" onDrop={onDrop} onDragOver={handleDragOver}>
-      <label
-        htmlFor="user-image"
-        className="mb-2 block text-sm font-medium text-purple-700"
-      >
-        Upload Your Photo
-      </label>
       <input
         id="user-image"
         type="file"

@@ -23,6 +23,26 @@ export const usePersistedState = <T>(
       })
   }, [key])
 
+  useEffect(() => {
+    if (!chrome || !chrome.storage) return
+
+    const handleChange = (
+      changes: { [key: string]: chrome.storage.StorageChange },
+      areaName: string,
+    ) => {
+      // check if the change is for the specified key and in the 'local' storage area
+      if (areaName === 'local' && changes[key]) {
+        setValue(changes[key].newValue)
+      }
+    }
+
+    chrome.storage.onChanged.addListener(handleChange)
+
+    return () => {
+      chrome.storage.onChanged.removeListener(handleChange)
+    }
+  }, [key])
+
   const handleSetValue = useCallback(
     (newValue: T | ((prevValue: T) => T)) => {
       setValue((prevState) => {

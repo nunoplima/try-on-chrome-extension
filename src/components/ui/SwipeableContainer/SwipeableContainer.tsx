@@ -5,7 +5,7 @@ import { ISwipeableContainer } from './SwipeableContainer.types'
 import 'swiper/css'
 
 export const SwipeableContainer: FC<ISwipeableContainer> = ({
-  slidesPerView = 3.5,
+  slidesPerView = 4.2,
   spaceBetween = 5,
   slidesOffsetBefore = 24,
   slidesOffsetAfter = 24,

@@ -1,5 +1,7 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { FC } from 'react'
+import AnimatedDOMElement from '../AnimatedDOMElement'
+import { EDomElement } from '../AnimatedDOMElement/AnimatedDOMElement.enums'
 import { IErrorMessage } from './ErrorMessage.types'
 
 export const ErrorMessage: FC<IErrorMessage> = ({
@@ -8,14 +10,12 @@ export const ErrorMessage: FC<IErrorMessage> = ({
 }) => (
   <AnimatePresence initial={false}>
     {visible ? (
-      <motion.p
-        className="absolute -bottom-4 left-0 text-xs font-semibold text-red-500"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+      <AnimatedDOMElement
+        element={EDomElement.p}
+        classNames="absolute -bottom-4 left-0 text-xs font-semibold text-red-600"
       >
         {message}
-      </motion.p>
+      </AnimatedDOMElement>
     ) : null}
   </AnimatePresence>
 )
