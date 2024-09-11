@@ -55,8 +55,6 @@ function App() {
     (apparelPhoto) => apparelPhoto.tabUrl === activeTabUrl,
   )?.photoUrl
 
-  console.log(activeTabUrl, 'from App component')
-
   useEffect(() => {
     if (import.meta.env.DEV || !isMounted || !activeTabUrl) return
 

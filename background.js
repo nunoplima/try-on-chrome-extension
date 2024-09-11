@@ -8,7 +8,6 @@ import { blobToBase64, urlToBlob } from './src/utils/base64'
 
 chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
   if (changeInfo.url && tab.active) {
-    console.log('worker', changeInfo.url)
     setToLocalStorage(ELocalStorageKeys.activeTabUrl, changeInfo.url)
   }
 })
@@ -17,7 +16,6 @@ chrome.runtime.onMessage.addListener((request) => {
   if (request.type === EWorkerMessages.getInitialActiveTabUrl) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const activeTab = tabs[0]
-      console.log(activeTab, 'from evt listener in worker')
       if (activeTab && activeTab.url) {
         setToLocalStorage(ELocalStorageKeys.activeTabUrl, activeTab.url)
       }
@@ -69,7 +67,6 @@ chrome.runtime.onMessage.addListener((request) => {
         (apparelPhoto) => apparelPhoto.tabUrl === activeTab.url,
       )?.photoUrl
 
-      console.log('apparel photo exists in storage: ', !!apparelPhoto)
       if (!!apparelPhoto) {
         chrome.runtime.sendMessage({
           type: EWorkerMessages.storedApparelPhotoUrl,
