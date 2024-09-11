@@ -1,9 +1,10 @@
-# Vite React TypeScript Tailwind Chrome Extension Template
+# MirrorMirror a Chrome Extension developed with Vite, React, TypeScript and Tailwind
 
 A template for building Chrome extensions with Vite, React, TypeScript, and Tailwind CSS.
 
 ## Development
 
+Create and fill your `.env` file with the secrets enumerated in `env.example`.
 Start the development server with hot module replacement (HMR):
 
 ```bash
