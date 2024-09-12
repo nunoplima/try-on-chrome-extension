@@ -59,22 +59,28 @@ function App() {
     if (import.meta.env.DEV || !isMounted || !activeTabUrl) return
 
     const workerMessageListener = (message: IWorkerMessage) => {
-      if (message.type === EWorkerMessages.apparelPhotoError) {
-        setGetApparelPhotoStatus(EHttpStatuses.error)
-      } else if (message.type === EWorkerMessages.storedApparelPhotoUrl) {
-        setGetApparelPhotoStatus(EHttpStatuses.success)
-      } else if (message.type === EWorkerMessages.apparelPhotoSuccess) {
-        setApparelPhotos((prevApparelPhotos: IApparelPhoto[]) => {
-          return [
+      switch (message.type) {
+        case EWorkerMessages.apparelPhotoError:
+          setGetApparelPhotoStatus(EHttpStatuses.error)
+          return
+
+        case EWorkerMessages.storedApparelPhotoUrl:
+          setGetApparelPhotoStatus(EHttpStatuses.success)
+          return
+
+        case EWorkerMessages.apparelPhotoSuccess:
+          setApparelPhotos((prevApparelPhotos) => [
             ...prevApparelPhotos,
             {
-              photoUrl: message.data as string,
-              tabUrl: message.tabUrl as string,
+              photoUrl: typeof message.data as string,
+              tabUrl: typeof message.tabUrl as string,
             },
-          ]
-        })
+          ])
+          setGetApparelPhotoStatus(EHttpStatuses.success)
+          return
 
-        setGetApparelPhotoStatus(EHttpStatuses.success)
+        default:
+          return
       }
     }
 
